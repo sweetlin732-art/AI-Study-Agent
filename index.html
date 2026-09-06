@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>AI Study Assistant</title>
+    <style>
+        body {
+            font-family: Arial;
+            background: #f2f6ff;
+            text-align: center;
+            padding: 50px;
+        }
+
+        .box {
+            background: white;
+            max-width: 600px;
+            margin: auto;
+            padding: 30px;
+            border-radius: 15px;
+        }
+
+        textarea {
+            width: 90%;
+            height: 100px;
+            padding: 10px;
+        }
+
+        button {
+            margin-top: 15px;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="box">
+    <h1>🤖 AI Study Assistant</h1>
+    <p>Ask AI any study question</p>
+
+    <textarea id="question" placeholder="Type your question..."></textarea>
+    <br>
+
+    <button onclick="askAI()">Ask AI</button>
+
+    <h3>AI Answer:</h3>
+    <p id="answer">Your answer will appear here.</p>
+</div>
+
+<script>
+async function askAI() {
+    const question = document.getElementById("question").value;
+    const answer = document.getElementById("answer");
+
+    if (question.trim() === "") {
+        answer.innerText = "Please enter a question.";
+        return;
+    }
+
+    answer.innerText = "AI is thinking... 🤔";
+
+    try {
+        const response = await fetch("/api/chat", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                question: question
+            })
+        });
+
+        const data = await response.json();
+
+        if (data.answer) {
+            answer.innerText = data.answer;
+        } else {
+            answer.innerText = "Sorry, something went wrong.";
+        }
+
+    } catch (error) {
+        answer.innerText = "Unable to connect to AI.";
+    }
+}
+</script>
+
+</body>
+</html>
